@@ -93,6 +93,75 @@ server.delete('/zoos/:id', (req, res) => {
   })
 })
 
+server.get('/bears', (req, res) => {
+  db('bears')
+  .then(bears => {
+    res.status(200).json(bears);
+  })
+  .catch(err => {
+    res.status(500).json({message: "something went wrong"})
+  })
+})
+
+server.get('/bears/:id', (req, res ) => {
+  db('bears')
+  .where( { id: req.params.id })
+  .first()
+  .then(bear => {
+    if (!bear) {
+      res.status(404).json({message:"id not found"})
+    } else {res.status(200).json(bear)}
+  })
+  .catch(err => {
+    res.status(500).json(err)
+  })
+})
+
+server.post('/bears', (req, res) => {
+  db('bears')
+  .insert(req.body, 'id')
+  .then(ids => {
+    res.status(201).json(ids);
+  })
+  .catch(err => {
+    res.status(500).json(err)
+  })
+})
+
+server.put('/bears/:id', (req, res) => {
+  const changes = req.body;
+  db('bears')
+  .where({ id : req.params.id})
+  .update(changes)
+  .then(count => {
+    if (count > 0){
+      res.status(200).json({message: `${count} records updated`})
+    } else {
+      res.status(404).json({message:"id not found"})
+    }
+  })
+  .catch(err => {
+    res.status(500).json(err)
+  })
+})
+
+server.delete('/bears/:id', (req, res) => {
+  db('bears')
+  .where({ id: req.params.id})
+  .del()
+  .then(count => {
+    if (count > 0){
+      const unit = count > 1 ? 'records' : 'record';
+      res.status(200).json({message: `${count} ${unit} deleted`})
+    } else {
+      res.status(404).json({message:"id not found"})
+    }
+  })
+  .catch(err => {
+    res.status(500).json(err)
+  })
+})
+
 const port = 3300;
 server.listen(port, function() {
   console.log(`\n=== Web API Listening on http://localhost:${port} ===\n`);
