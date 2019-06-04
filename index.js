@@ -105,7 +105,7 @@ server.get('/bears', (req, res) => {
 
 server.get('/bears/:id', (req, res ) => {
   db('bears')
-  .where( { id: req.params.id })
+  .where( { bears_id: req.params.id })
   .first()
   .then(bear => {
     if (!bear) {
@@ -119,7 +119,7 @@ server.get('/bears/:id', (req, res ) => {
 
 server.post('/bears', (req, res) => {
   db('bears')
-  .insert(req.body, 'id')
+  .insert(req.body, 'bears_id')
   .then(ids => {
     res.status(201).json(ids);
   })
@@ -131,7 +131,7 @@ server.post('/bears', (req, res) => {
 server.put('/bears/:id', (req, res) => {
   const changes = req.body;
   db('bears')
-  .where({ id : req.params.id})
+  .where({ bears_id : req.params.id})
   .update(changes)
   .then(count => {
     if (count > 0){
@@ -147,7 +147,7 @@ server.put('/bears/:id', (req, res) => {
 
 server.delete('/bears/:id', (req, res) => {
   db('bears')
-  .where({ id: req.params.id})
+  .where({ bears_id: req.params.id})
   .del()
   .then(count => {
     if (count > 0){
